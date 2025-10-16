@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Pembuat Intip Chat iPhone</title>
+<style>
+  body {
+    background: #e2e8f0;
+    color: #111;
+    font-family: 'Poppins', sans-serif;
+    text-align: center;
+    padding: 20px;
+  }
+
+  h2 {
+    color: #22c55e;
+  }
+
+  .hidden {
+    display: none;
+  }
+
+  .preview-area {
+    position: relative;
+    display: inline-block;
+    margin-top: 20px;
+  }
+
+  .chat-frame {
+    position: relative;
+    background: white;
+    border-radius: 25px;
+    width: 260px;
+    height: 400px;
+    overflow: hidden;
+    box-shadow: 0 0 25px rgba(0,0,0,0.3);
+  }
+
+  .chat-bg {
+    background-color: white;
+    background-image: radial-gradient(#22c55e 1px, transparent 1px);
+    background-size: 18px 18px;
+    width: 100%;
+    height: 100%;
+    position: absolute;
+  }
+
+  .chat-head {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 55px;
+    background: rgba(255, 255, 255, 0.6);
+    backdrop-filter: blur(5px);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 12px;
+    z-index: 2;
+  }
+
+  .chat-head .profile {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .chat-head img {
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    object-fit: cover;
+  }
+
+  .chat-head .name {
+    font-weight: 600;
+    font-size: 14px;
+  }
+
+  .chat-head .icons {
+    font-size: 14px;
+  }
+
+  .chat-dummy-right, .chat-dummy-left {
+    position: absolute;
+    background: #dcf8c6;
+    color: #111;
+    padding: 8px 12px;
+    border-radius: 18px;
+    font-size: 13px;
+    opacity: 0.9;
+    filter: blur(4px);
+    z-index: 2;
+  }
+
+  .chat-dummy-right {
+    top: 80px;
+    right: 15px;
+    border-radius: 18px 4px 18px 18px;
+  }
+
+  .chat-dummy-left {
+    left: 15px;
+    background: #ffffff;
+    border-radius: 4px 18px 18px 18px;
+  }
+
+  .chat-left-1 { top: 130px; }
+  .chat-left-2 { top: 180px; }
+  .chat-left-3 { top: 230px; }
+
+  .chat-clear {
+    position: absolute;
+    bottom: 30px;
+    left: 10px;
+    background: #ffffff;
+    color: #111;
+    padding: 10px 15px;
+    border-radius: 18px 18px 18px 4px;
+    font-size: 15px;
+    z-index: 4;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+    max-width: 80%;
+    word-wrap: break-word;
+  }
+
+  .emoji-bar {
+    position: absolute;
+    bottom: 80px;
+    left: 15px;
+    font-size: 20px;
+    z-index: 4;
+  }
+
+  .status-bar {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    color: #111;
+    font-size: 12px;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    z-index: 4;
+  }
+
+  .signal { font-size: 13px; }
+
+  .blur-layer {
+    position: absolute;
+    inset: 0;
+    backdrop-filter: blur(6px);
+    z-index: 3;
+    border-radius: 25px;
+  }
+
+  input {
+    padding: 10px;
+    width: 80%;
+    border-radius: 10px;
+    border: 2px solid #22c55e;
+    margin-top: 20px;
+    font-size: 15px;
+  }
+
+  button {
+    background: #22c55e;
+    color: white;
+    border: none;
+    border-radius: 10px;
+    padding: 10px 20px;
+    font-size: 16px;
+    cursor: pointer;
+    margin-top: 10px;
+  }
+
+  button:hover { background: #16a34a; }
+
+  .credit {
+    margin-top: 25px;
+    font-size: 14px;
+    color: #555;
+    font-weight: 500;
+  }
+
+  .credit span {
+    color: #22c55e;
+    font-weight: 700;
+  }
+
+  /* Halaman login */
+  #loginPage {
+    margin-top: 100px;
+  }
+
+  #error {
+    color: red;
+    margin-top: 10px;
+    font-size: 14px;
+  }
+
+  /* Teks peringatan */
+  .warning {
+    color: red;
+    font-weight: bold;
+    margin-top: 25px;
+    font-size: 15px;
+  }
+</style>
+</head>
+<body>
+  <!-- Halaman Login -->
+  <div id="loginPage">
+    <h2>🔐 Masukkan Kode Akses</h2>
+    <input type="password" id="accessCode" placeholder="Masukkan kode akses...">
+    <br>
+    <button onclick="checkAccess()">Masuk</button>
+    <div id="error"></div>
+  </div>
+
+  <!-- Halaman Utama -->
+  <div id="mainPage" class="hidden">
+    <h2>🤔CHAT INTIP IPHONE BG BLUR😋</h2>
+
+    <div class="preview-area" id="capture">
+      <div class="chat-frame">
+        <div class="chat-bg"></div>
+
+        <div class="chat-head">
+          <div class="profile">
+            <img src="https://i.pravatar.cc/100" alt="Profil">
+            <span class="name">Alya 💬</span>
+          </div>
+          <div class="icons">📞 📹</div>
+        </div>
+
+        <div class="chat-dummy-right">Oke, nanti aku kabari ya!</div>
+        <div class="chat-dummy-left chat-left-1">Udah makan belum?</div>
+        <div class="chat-dummy-right chat-left-2">Kok belum bales sih 😅</div>
+        <div class="chat-dummy-left chat-left-3">Hehe bercanda~</div>
+
+        <div class="status-bar">
+          <span class="signal">🖲️</span> 4G Vo Lte ⚡ 🧫
+        </div> 
+
+        <div class="emoji-bar">🤭 😋 😂🤗🤓 😹</div>
+        <div class="chat-clear" id="chatText">Hai, lagi apa?</div>
+
+        <div class="blur-layer"></div>
+      </div>
+    </div>
+
+    <br>
+    <input type="text" id="inputText" placeholder="Tulis isi chat yang diintip...">
+    <br>
+    <button onclick="ubahTeks()">Tampilkan Chat</button>
+    <button onclick="()">SRENSHOT LALU CROP FOTTO NYA YAA</button>
+
+    <div class="credit">
+      Coding by <span>RJLPGR</span>
+    </div>
+
+    <!-- Teks peringatan -->
+    <div class="warning">
+      ⚠️ PENGERTIAN!! WEB JANGAN DI SALAH GUNAKAN!!!<br>
+      JIKA DI SALAH GUNAKAN DEVELOPER TIDAK AKAN BERTANGGUNG JAWAB!!!
+    </div>
+  </div>
+
+  <script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
+  <script>
+    function checkAccess() {
+      const kode = document.getElementById("accessCode").value;
+      const error = document.getElementById("error");
+      if (kode === "PGG123") {
+        document.getElementById("loginPage").style.display = "none";
+        document.getElementById("mainPage").classList.remove("hidden");
+      } else {
+        error.textContent = "❌ Kode salah! Silakan coba lagi.👀";
+      }
+    }
+
+    function ubahTeks() {
+      const teks = document.getElementById("inputText").value;
+      document.getElementById("chatText").innerText = teks || "Hai, lagi apa?";
+    }
+
+    function downloadGambar() {
+      const elemen = document.getElementById("capture");
+      html2canvas(elemen, {scale: 2}).then(canvas => {
+        const link = document.createElement("a");
+        link.download = "intip-chat-iphone.png";
+        link.href = canvas.toDataURL("image/png");
+        link.click();
+      });
+    }
+  </script>
+</body>
+</html>
